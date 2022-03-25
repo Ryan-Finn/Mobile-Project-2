@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Group 4</string>
+    <!-- Welcome -->
+    <string name="WelcomeText">Welcome Players!</string>
+    <string name="NameInput1Hint">Player 1</string>
+    <string name="NameInput2Hint">Player 2</string>
+    <string name="RoundsInputHint">Number of Rounds (1-inf)</string>
+    <string name="StartButtonText">START GAME</string>
+    <string name="HowToPlayButtonText">HOW TO PLAY</string>
+    <string name="HowToPlayTitle">How To Play</string>
+    <string name="HowToPlayMessage">GOAL\n\n
+Collect as many coins as possible using the capture options. The player with the most coins at the
+        end of the game wins. The game is over when there are either no rounds left or no coins left
+        to collect.\n\n\n
+
+CAPTURE OPTIONS\n\n
+1) Circle - Collects the nearest coins at 100 percent capture probability. Can be moved across the
+        screen.\n\n
+2) Rectangle - Collects the nearest coins and can be scaled. But the larger the
+        rectangle, the lower is the probability of capturing the coins. The capture probability of
+        the default rectangle is 50 percent.\n\n
+3) Line - Collects the nearest coins and can be rotated. Has a 75 percent capture probability.\n\n\n
+    NOTES\n\n
+    Capture button will be enabled only when a capture option is selected.\n\n
+    A round is over when both the players have used the capture button.\n\n
+    Default number of rounds are 5 and player names are "Player 1" and "Player 2".\n\n
+
+    Invalid number of rounds will result in default settings for the rounds.</string>
+
+    <!-- GameBoard -->
+    <string name="Name1">Player 1</string>
+    <string name="Rounds">Rounds</string>
+    <string name="Name2">Player 2</string>
+    <string name="capture_options">Capture Options</string>
+    <string name="capture">Capture!</string>
+    <string name="QUIT_GAME">Quit Game?</string>
+    <string name="QUIT_GAME_MESSAGE">All progress in the game will be lost.</string>
+
+    <!-- CaptureSelection -->
+    <string name="circle_description">Circle_Capture</string>
+    <string name="rect_description">Rectangle Image</string>
+    <string name="line_description">Line image</string>
+
+    <!-- EndGame -->
+    <string name="Player1ScoreString">Player 1 Score</string>
+    <string name="Player2ScoreString">Player 2 Score</string>
+    <string name="winner_string">WINNER</string>
+    <string name="return_string">PLAY AGAIN!</string>
+</resources>
+
