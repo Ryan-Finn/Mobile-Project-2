@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.sdsmt.group4.Control.GameBoardActivity">
+    tools:context="edu.sdsmt.group2.Control.GameBoardActivity">
 
-    <edu.sdsmt.group4.View.GameBoardView
+    <edu.sdsmt.group2.View.GameBoardView
         android:id="@+id/gameBoardView"
         android:layout_width="0dp"
         android:layout_height="0dp"

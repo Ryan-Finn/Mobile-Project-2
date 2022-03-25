@@ -1,16 +1,16 @@
-package edu.sdsmt.group4.Control;
+package edu.sdsmt.group2.Control;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import edu.sdsmt.group4.R;
+import edu.sdsmt.group2.R;
 
 public class EndGameActivity extends AppCompatActivity {
-    public final static String PLAYER1_MESSAGE = "edu.sdsmt.group4.PLAYER1_MESSAGE";
-    public final static String PLAYER2_MESSAGE  = "edu.sdsmt.group4.PLAYER2_MESSAGE";
-    public final static String WINNER_MESSAGE  = "edu.sdsmt.group4.WINNER_MESSAGE";
+    public final static String PLAYER1_MESSAGE = "edu.sdsmt.group2.PLAYER1_MESSAGE";
+    public final static String PLAYER2_MESSAGE  = "edu.sdsmt.group2.PLAYER2_MESSAGE";
+    public final static String WINNER_MESSAGE  = "edu.sdsmt.group2.WINNER_MESSAGE";
     TextView player1;
     TextView player2;
     TextView winner;

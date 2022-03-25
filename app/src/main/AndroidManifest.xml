@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.sdsmt.group4">
+    package="edu.sdsmt.group2">
 
     <application
         android:allowBackup="true"
@@ -8,19 +8,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.group4">
+        android:theme="@style/Theme.group2">
         <activity
-            android:name=".Control.GameBoardActivity"
+            android:name="edu.sdsmt.group2.Control.GameBoardActivity"
             android:exported="false"
             android:launchMode="singleTop"/>
         <activity
-            android:name=".Control.CaptureSelectionActivity"
+            android:name="edu.sdsmt.group2.Control.CaptureSelectionActivity"
             android:exported="false" />
         <activity
-            android:name=".Control.EndGameActivity"
+            android:name="edu.sdsmt.group2.Control.EndGameActivity"
             android:exported="false" />
         <activity
-            android:name=".Control.WelcomeActivity"
+            android:name="edu.sdsmt.group2.Control.WelcomeActivity"
             android:exported="true"
             android:launchMode="singleTop">
 

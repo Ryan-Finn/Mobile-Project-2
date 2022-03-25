@@ -1,7 +1,6 @@
-package edu.sdsmt.group4.Model;
+package edu.sdsmt.group2.Model;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import java.util.ArrayList;
 import java.util.Random;

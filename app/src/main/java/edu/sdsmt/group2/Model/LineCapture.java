@@ -1,4 +1,4 @@
-package edu.sdsmt.group4.Model;
+package edu.sdsmt.group2.Model;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

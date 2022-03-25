@@ -1,4 +1,4 @@
-package edu.sdsmt.group4.Control;
+package edu.sdsmt.group2.Control;
 
 /* *
  * Project 1 Grading
@@ -53,12 +53,12 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import edu.sdsmt.group4.R;
+import edu.sdsmt.group2.R;
 
 public class WelcomeActivity extends AppCompatActivity {
-    public final static String PLAYER1NAME_MESSAGE = "edu.sdsmt.group4.PLAYER1NAME_MESSAGE";
-    public final static String PLAYER2NAME_MESSAGE  = "edu.sdsmt.group4.PLAYER2NAME_MESSAGE";
-    public final static String ROUNDS_MESSAGE  = "edu.sdsmt.group4.ROUNDS_MESSAGE";
+    public final static String PLAYER1NAME_MESSAGE = "edu.sdsmt.group2.PLAYER1NAME_MESSAGE";
+    public final static String PLAYER2NAME_MESSAGE  = "edu.sdsmt.group2.PLAYER2NAME_MESSAGE";
+    public final static String ROUNDS_MESSAGE  = "edu.sdsmt.group2.ROUNDS_MESSAGE";
     TextView player1;
     TextView player2;
     TextView rounds;

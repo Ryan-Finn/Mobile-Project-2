@@ -1,4 +1,4 @@
-package edu.sdsmt.group4.Control;
+package edu.sdsmt.group2.Control;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -14,12 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import edu.sdsmt.group4.R;
-import edu.sdsmt.group4.View.GameBoardView;
+import edu.sdsmt.group2.R;
+import edu.sdsmt.group2.View.GameBoardView;
 
 public class GameBoardActivity extends AppCompatActivity {
     private GameBoardView view;
-    public static final String CAPTURED_INT = "edu.sdsmt.group4.RETURN_MESSAGE";
+    public static final String CAPTURED_INT = "edu.sdsmt.group2.RETURN_MESSAGE";
     private TextView player1Name;
     private TextView player2Name;
     private TextView player1Score;

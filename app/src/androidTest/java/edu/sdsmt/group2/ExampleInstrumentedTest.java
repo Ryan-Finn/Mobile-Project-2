@@ -1,4 +1,4 @@
-package edu.sdsmt.group4;
+package edu.sdsmt.group2;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("edu.sdsmt.group4", appContext.getPackageName());
+        assertEquals("edu.sdsmt.group2", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package edu.sdsmt.group4;
+package edu.sdsmt.group2;
 
 import org.junit.Test;
 

@@ -1,11 +1,11 @@
-package edu.sdsmt.group4.Control;
+package edu.sdsmt.group2.Control;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import edu.sdsmt.group4.R;
+import edu.sdsmt.group2.R;
 
 public class CaptureSelectionActivity extends AppCompatActivity {
     @Override

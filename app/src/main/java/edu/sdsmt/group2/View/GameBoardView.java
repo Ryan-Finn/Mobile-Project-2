@@ -1,4 +1,4 @@
-package edu.sdsmt.group4.View;
+package edu.sdsmt.group2.View;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,12 +12,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import java.util.Random;
-import edu.sdsmt.group4.Model.CaptureObject;
-import edu.sdsmt.group4.Model.CircleCapture;
-import edu.sdsmt.group4.Model.Collectable;
-import edu.sdsmt.group4.Model.GameBoard;
-import edu.sdsmt.group4.Model.LineCapture;
-import edu.sdsmt.group4.Model.RectangleCapture;
+import edu.sdsmt.group2.Model.CaptureObject;
+import edu.sdsmt.group2.Model.CircleCapture;
+import edu.sdsmt.group2.Model.Collectable;
+import edu.sdsmt.group2.Model.GameBoard;
+import edu.sdsmt.group2.Model.LineCapture;
+import edu.sdsmt.group2.Model.RectangleCapture;
 
 public class GameBoardView extends View {
     private static final String CAPTURE_TYPE = "gameBoard.CaptureType" ;
