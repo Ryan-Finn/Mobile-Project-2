@@ -48,8 +48,10 @@ package edu.sdsmt.group2.Control;
  */
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -60,7 +62,9 @@ import edu.sdsmt.group2.R;
 
 public class WelcomeActivity extends AppCompatActivity {
     private Cloud monitor;
+    private CheckBox remember;
     private TextView user, pass;
+    private SharedPreferences.Editor loginInfoEditor;
     public final static String NAME = "edu.sdsmt.group2.NAME";
 
     @Override
@@ -71,9 +75,26 @@ public class WelcomeActivity extends AppCompatActivity {
         monitor = Cloud.INSTANCE;
         user = findViewById(R.id.user);
         pass = findViewById(R.id.password);
+        remember = findViewById(R.id.remember);
+
+        SharedPreferences loginInfo = getSharedPreferences("login", MODE_PRIVATE);
+        loginInfoEditor = loginInfo.edit();
+        if (loginInfo.getBoolean("remember", false)) {
+            user.setText(loginInfo.getString("user", ""));
+            pass.setText(loginInfo.getString("pass", ""));
+            remember.setChecked(true);
+        }
     }
 
     public void onStart(View view) {
+        if (remember.isChecked()) {
+            loginInfoEditor.putBoolean("remember", true);
+            loginInfoEditor.putString("user", user.getText().toString());
+            loginInfoEditor.putString("pass", pass.getText().toString());
+        } else
+            loginInfoEditor.clear();
+        loginInfoEditor.commit();
+
         monitor.login(user.getText().toString(), pass.getText().toString(), view, this);
     }
 

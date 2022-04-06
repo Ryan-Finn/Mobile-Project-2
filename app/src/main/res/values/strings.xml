@@ -53,5 +53,6 @@ CAPTURE OPTIONS\n\n
     <string name="loginFail">Login Failed.</string>
     <string name="badPass">Passwords do not match.</string>
     <string name="accountFail">Account Creation Failed.</string>
+    <string name="remember">Remember Me</string>
 </resources>
 
