@@ -47,11 +47,13 @@ public class WaitActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue(String.class) != null &&
-                        !Objects.equals(snapshot.getValue(String.class), Objects.requireNonNull(userAuth.getCurrentUser()).getUid()))
+                        !Objects.equals(snapshot.getValue(String.class), Objects.requireNonNull(userAuth.getCurrentUser()).getUid())) {
                     gameRef.child("player2").setValue(getIntent().getStringExtra(WelcomeActivity.NAME));
-                else
+                    intent.putExtra(PLAYER1, snapshot.getValue(String.class));
+                } else {
                     gameRef.child("player1").setValue(getIntent().getStringExtra(WelcomeActivity.NAME));
-                intent.putExtra(PLAYER1, snapshot.getValue(String.class));
+                    intent.putExtra(PLAYER1, getIntent().getStringExtra(WelcomeActivity.NAME));
+                }
             }
 
             @Override
