@@ -42,20 +42,15 @@ public class GameBoardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_board);
         view = this.findViewById(R.id.gameBoardView);
 
         //get player names and no of rounds from prev
         Intent intent = getIntent();
-        String name1 = intent.getStringExtra(WelcomeActivity.USER);
-        String name2 = intent.getStringExtra(WelcomeActivity.PASS);
+        String name1 = intent.getStringExtra(WaitActivity.PLAYER1);
+        String name2 = intent.getStringExtra(WaitActivity.PLAYER2);
         String r = "5";
-
-
-
 
         view.addPlayer(name1,0);
         view.addPlayer(name2,1);

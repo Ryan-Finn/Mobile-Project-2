@@ -19,21 +19,24 @@ import java.util.Objects;
 import edu.sdsmt.group2.R;
 
 public class WaitActivity extends AppCompatActivity {
-    private WaitActivity thisActivity;
     private final FirebaseAuth userAuth = FirebaseAuth.getInstance();
     private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
+    public final static String PLAYER1 = "edu.sdsmt.group2.PLAYER1";
+    public final static String PLAYER2 = "edu.sdsmt.group2.PLAYER2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait);
-        thisActivity = this;
+        Intent intent = new Intent(this, GameBoardActivity.class);
 
         gameRef.child("player2").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.getValue(String.class) != null)
-                    thisActivity.startActivity(new Intent(thisActivity, GameBoardActivity.class));
+                if (snapshot.getValue(String.class) != null) {
+                    intent.putExtra(PLAYER2, snapshot.getValue(String.class));
+                    startActivity(intent);
+                }
             }
 
             @Override
@@ -45,9 +48,10 @@ public class WaitActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue(String.class) != null &&
                         !Objects.equals(snapshot.getValue(String.class), Objects.requireNonNull(userAuth.getCurrentUser()).getUid()))
-                    gameRef.child("player2").setValue(Objects.requireNonNull(userAuth.getCurrentUser()).getUid());
+                    gameRef.child("player2").setValue(getIntent().getStringExtra(WelcomeActivity.NAME));
                 else
-                    gameRef.child("player1").setValue(Objects.requireNonNull(userAuth.getCurrentUser()).getUid());
+                    gameRef.child("player1").setValue(getIntent().getStringExtra(WelcomeActivity.NAME));
+                intent.putExtra(PLAYER1, snapshot.getValue(String.class));
             }
 
             @Override

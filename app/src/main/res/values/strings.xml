@@ -49,7 +49,7 @@ CAPTURE OPTIONS\n\n
     <string name="Player2ScoreString">Player 2 Score</string>
     <string name="winner_string">WINNER</string>
     <string name="return_string">PLAY AGAIN!</string>
-    <string name="waiting_for_game">Waiting for Game&#8230;</string>
+    <string name="waiting_for_game">Waiting For Game&#8230;</string>
     <string name="loginFail">Login Failed.</string>
     <string name="badPass">Passwords do not match.</string>
     <string name="accountFail">Account Creation Failed.</string>

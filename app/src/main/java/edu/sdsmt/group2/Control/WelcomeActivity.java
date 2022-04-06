@@ -59,10 +59,9 @@ import edu.sdsmt.group2.Model.Cloud;
 import edu.sdsmt.group2.R;
 
 public class WelcomeActivity extends AppCompatActivity {
-    public final static String USER = "edu.sdsmt.group2.PLAYER1NAME_MESSAGE";
-    public final static String PASS  = "edu.sdsmt.group2.PLAYER2NAME_MESSAGE";
     private Cloud monitor;
     private TextView user, pass;
+    public final static String NAME = "edu.sdsmt.group2.NAME";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,6 @@ public class WelcomeActivity extends AppCompatActivity {
         monitor = Cloud.INSTANCE;
         user = findViewById(R.id.user);
         pass = findViewById(R.id.password);
-        pass.setText("");
     }
 
     public void onStart(View view) {

@@ -60,7 +60,9 @@ public class Cloud {
         userRef.child("usernames").child(user).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                signIn(snapshot.getValue(String.class), pass, view, activity);
+                Intent intent = new Intent(activity, WaitActivity.class);
+                intent.putExtra(WelcomeActivity.NAME, user);
+                signIn(snapshot.getValue(String.class), pass, view, activity, intent);
                 startAuthListening();
             }
 
@@ -69,10 +71,10 @@ public class Cloud {
         });
     }
 
-    private void signIn(String email, String pass, View view, WelcomeActivity activity) {
+    private void signIn(String email, String pass, View view, WelcomeActivity activity, Intent intent) {
         userAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                activity.startActivity(new Intent(activity, WaitActivity.class));
+                activity.startActivity(intent);
                 userRef.child(Objects.requireNonNull(userAuth.getCurrentUser()).getUid()).child("lfg").setValue(true);
                 Log.d(TAG, "signInWithEmail:onComplete: " + task.isSuccessful());
             } else {
