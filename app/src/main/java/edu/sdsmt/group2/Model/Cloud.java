@@ -45,7 +45,7 @@ public class Cloud {
                 res.put("/" + firebaseUser.getUid() + "/username", user);
                 res.put("/" + firebaseUser.getUid() + "/email", email);
                 res.put("/" + firebaseUser.getUid() + "/password", pass);
-                res.put("/" + firebaseUser.getUid() + "/lfg", true);
+                res.put("/" + firebaseUser.getUid() + "/lfg", false);
                 userRef.updateChildren(res);
                 activity.finish();
             } else {
@@ -72,6 +72,7 @@ public class Cloud {
         userAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 activity.startActivity(new Intent(activity, WaitActivity.class));
+                userRef.child(Objects.requireNonNull(userAuth.getCurrentUser()).getUid()).child("lfg").setValue(true);
                 Log.d(TAG, "signInWithEmail:onComplete: " + task.isSuccessful());
             } else {
                 view.post(() -> Toast.makeText(view.getContext(), R.string.loginFail, Toast.LENGTH_LONG).show());
