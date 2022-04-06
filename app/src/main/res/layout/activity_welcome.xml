@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,34 +20,29 @@
         app:layout_constraintVertical_bias="0.25" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/nameInput1"
+        android:id="@+id/username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/NameInput1Hint"
+        android:minHeight="48dp"
+        android:textColorHint="#757575"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/WelcomeTextView"
         app:layout_constraintVertical_bias="0.25" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/nameInput2"
+        android:id="@+id/password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/NameInput2Hint"
-        app:layout_constraintEnd_toEndOf="@+id/nameInput1"
-        app:layout_constraintStart_toStartOf="@+id/nameInput1"
-        app:layout_constraintTop_toBottomOf="@+id/nameInput1" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/roundsInput"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/RoundsInputHint"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="@+id/nameInput2"
-        app:layout_constraintStart_toStartOf="@+id/nameInput2"
-        app:layout_constraintTop_toBottomOf="@+id/nameInput2" />
+        android:inputType="textWebPassword"
+        android:minHeight="48dp"
+        android:textColorHint="#757575"
+        app:layout_constraintEnd_toEndOf="@+id/username"
+        app:layout_constraintStart_toStartOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <Button
         android:id="@+id/startGameButton"
@@ -54,9 +50,11 @@
         android:layout_height="wrap_content"
         android:onClick="onStart"
         android:text="@string/StartButtonText"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/howToPlayButton"
         app:layout_constraintStart_toStartOf="@+id/howToPlayButton"
-        app:layout_constraintTop_toBottomOf="@+id/roundsInput" />
+        app:layout_constraintTop_toBottomOf="@+id/password"
+        app:layout_constraintVertical_bias="0.2" />
 
     <Button
         android:id="@+id/howToPlayButton"
@@ -64,8 +62,8 @@
         android:layout_height="wrap_content"
         android:onClick="onHowToPlay"
         android:text="@string/HowToPlayButtonText"
-        app:layout_constraintEnd_toEndOf="@+id/roundsInput"
-        app:layout_constraintStart_toStartOf="@+id/roundsInput"
+        app:layout_constraintEnd_toEndOf="@+id/password"
+        app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toBottomOf="@+id/startGameButton" />
 
     <androidx.constraintlayout.widget.Guideline

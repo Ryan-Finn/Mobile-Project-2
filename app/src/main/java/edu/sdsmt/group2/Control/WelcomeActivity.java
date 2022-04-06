@@ -51,37 +51,47 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import edu.sdsmt.group2.Model.Cloud;
 import edu.sdsmt.group2.R;
 
 public class WelcomeActivity extends AppCompatActivity {
-    public final static String PLAYER1NAME_MESSAGE = "edu.sdsmt.group2.PLAYER1NAME_MESSAGE";
-    public final static String PLAYER2NAME_MESSAGE  = "edu.sdsmt.group2.PLAYER2NAME_MESSAGE";
-    public final static String ROUNDS_MESSAGE  = "edu.sdsmt.group2.ROUNDS_MESSAGE";
-    TextView player1;
-    TextView player2;
-    TextView rounds;
+    public final static String USER = "edu.sdsmt.group2.PLAYER1NAME_MESSAGE";
+    public final static String PASS  = "edu.sdsmt.group2.PLAYER2NAME_MESSAGE";
+    private Cloud monitor;
+
+    TextView user;
+    TextView pass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        monitor = Cloud.INSTANCE;
+
         setContentView(R.layout.activity_welcome);
 
-        player1 = findViewById(R.id.nameInput1);
-        player2 = findViewById(R.id.nameInput2);
-        rounds = findViewById(R.id.roundsInput);
+        user = findViewById(R.id.username);
+        pass = findViewById(R.id.password);
     }
 
     public void onStart(View view) {
-        Intent intent = new Intent(this, GameBoardActivity.class);
-        intent.putExtra(PLAYER1NAME_MESSAGE, player1.getText().toString());
-        intent.putExtra(PLAYER2NAME_MESSAGE, player2.getText().toString());
-        intent.putExtra(ROUNDS_MESSAGE, rounds.getText().toString());
-        startActivity(intent);
-        player1.setText("");
-        player2.setText("");
-        rounds.setText("");
+
+        monitor.login(user.getText().toString(), pass.getText().toString());
+        if (monitor.isAuthenticated()) {
+            Intent intent = new Intent(this, waitActivity.class);
+            startActivity(intent);
+        } else {
+            view.post(() -> Toast.makeText(view.getContext(), R.string.loginFail, Toast.LENGTH_LONG).show());;
+        }
+
+
+        user.setText("");
+        pass.setText("");
     }
 
     public void onHowToPlay(View view) {

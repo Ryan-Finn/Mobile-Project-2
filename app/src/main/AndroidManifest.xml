@@ -10,20 +10,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.group2">
         <activity
-            android:name="edu.sdsmt.group2.Control.GameBoardActivity"
+            android:name=".Control.waitActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Control.GameBoardActivity"
             android:exported="false"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop" />
         <activity
-            android:name="edu.sdsmt.group2.Control.CaptureSelectionActivity"
+            android:name=".Control.CaptureSelectionActivity"
             android:exported="false" />
         <activity
-            android:name="edu.sdsmt.group2.Control.EndGameActivity"
+            android:name=".Control.EndGameActivity"
             android:exported="false" />
         <activity
-            android:name="edu.sdsmt.group2.Control.WelcomeActivity"
+            android:name=".Control.WelcomeActivity"
             android:exported="true"
             android:launchMode="singleTop">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

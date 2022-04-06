@@ -1,33 +1,34 @@
 {
   "project_info": {
-    "project_number": "1065564545751",
-    "project_id": "project-2-6a469",
-    "storage_bucket": "project-2-6a469.appspot.com"
+    "project_number": "406444958266",
+    "firebase_url": "https://project2group2-7eaa3-default-rtdb.firebaseio.com",
+    "project_id": "project2group2-7eaa3",
+    "storage_bucket": "project2group2-7eaa3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1065564545751:android:ca5d22421a0c33fcbac692",
+        "mobilesdk_app_id": "1:406444958266:android:bcd8dd8cd0a2d963420b03",
         "android_client_info": {
           "package_name": "edu.sdsmt.group2"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1065564545751-i4srf30rha4g6h5s5pjgisep6hn4sjcu.apps.googleusercontent.com",
+          "client_id": "406444958266-2rht77da5v6tfkj24fv1lvff8pmu8du2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCXxmAp35iKo-POVFAhBGDlTghFVfW1RsU"
+          "current_key": "AIzaSyDMJP5Tfv5ytvVsY4TvRdGCZVcfC54Wg2k"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1065564545751-i4srf30rha4g6h5s5pjgisep6hn4sjcu.apps.googleusercontent.com",
+              "client_id": "406444958266-2rht77da5v6tfkj24fv1lvff8pmu8du2.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

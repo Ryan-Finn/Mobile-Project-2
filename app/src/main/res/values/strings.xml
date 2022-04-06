@@ -2,8 +2,8 @@
     <string name="app_name">Group 2</string>
     <!-- Welcome -->
     <string name="WelcomeText">Welcome Players!</string>
-    <string name="NameInput1Hint">Player 1</string>
-    <string name="NameInput2Hint">Player 2</string>
+    <string name="NameInput1Hint">Username</string>
+    <string name="NameInput2Hint">Password</string>
     <string name="RoundsInputHint">Number of Rounds (1-inf)</string>
     <string name="StartButtonText">START GAME</string>
     <string name="HowToPlayButtonText">HOW TO PLAY</string>
@@ -46,5 +46,7 @@ CAPTURE OPTIONS\n\n
     <string name="Player2ScoreString">Player 2 Score</string>
     <string name="winner_string">WINNER</string>
     <string name="return_string">PLAY AGAIN!</string>
+    <string name="waiting_for_game">Waiting for Game...</string>
+    <string name="loginFail">Login Failed. Please try again</string>
 </resources>
 
