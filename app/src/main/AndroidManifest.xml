@@ -10,7 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.group2">
         <activity
-            android:name=".Control.waitActivity"
+            android:name=".Control.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Control.WaitActivity"
             android:exported="false" />
         <activity
             android:name=".Control.GameBoardActivity"

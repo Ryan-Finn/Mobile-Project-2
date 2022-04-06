@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -32,11 +33,11 @@
         app:layout_constraintVertical_bias="0.15" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/password"
+        android:id="@+id/email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/PasswordInputHint"
-        android:inputType="textPassword"
+        android:hint="@string/EmailInputHint"
+        android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="@+id/user"
@@ -44,63 +45,52 @@
         app:layout_constraintTop_toBottomOf="@+id/user" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/roundsInput"
+        android:id="@+id/password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/RoundsInputHint"
+        android:hint="@string/PasswordInputHint"
+        android:inputType="textPassword"
         android:minHeight="48dp"
         android:textColorHint="#757575"
-        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/email"
+        app:layout_constraintStart_toStartOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@+id/email" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/password2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/PasswordInput2Hint"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="@+id/password"
         app:layout_constraintStart_toStartOf="@+id/password"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <Button
-        android:id="@+id/startGameButton"
-        android:layout_width="0dp"
+        android:id="@+id/createUserButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onStart"
-        android:text="@string/StartButtonText"
+        android:onClick="onCreateAccount"
+        android:text="@string/CreateUserText"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/howToPlayButton"
-        app:layout_constraintStart_toStartOf="@+id/howToPlayButton"
-        app:layout_constraintTop_toBottomOf="@+id/SignUpTextView"
-        app:layout_constraintVertical_bias="0.15" />
-
-    <Button
-        android:id="@+id/howToPlayButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:onClick="onHowToPlay"
-        android:text="@string/HowToPlayButtonText"
-        app:layout_constraintEnd_toEndOf="@+id/createUserButton"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toStartOf="@+id/createUserButton"
-        app:layout_constraintTop_toBottomOf="@+id/startGameButton" />
+        app:layout_constraintEnd_toEndOf="@+id/password2"
+        app:layout_constraintStart_toStartOf="@+id/password2"
+        app:layout_constraintTop_toBottomOf="@+id/password2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
+        app:layout_constraintGuide_percent="0.20" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35" />
-
-    <Button
-        android:id="@+id/createUserButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onSignUp"
-        android:text="@string/CreateUserText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/howToPlayButton" />
+        app:layout_constraintGuide_percent="0.80" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -63,35 +63,21 @@ public class WelcomeActivity extends AppCompatActivity {
     public final static String USER = "edu.sdsmt.group2.PLAYER1NAME_MESSAGE";
     public final static String PASS  = "edu.sdsmt.group2.PLAYER2NAME_MESSAGE";
     private Cloud monitor;
-
-    TextView user;
-    TextView pass;
+    private TextView user, pass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        monitor = Cloud.INSTANCE;
-
         setContentView(R.layout.activity_welcome);
 
-        user = findViewById(R.id.username);
+        monitor = Cloud.INSTANCE;
+        user = findViewById(R.id.user);
         pass = findViewById(R.id.password);
+        pass.setText("");
     }
 
     public void onStart(View view) {
-
-        monitor.login(user.getText().toString(), pass.getText().toString());
-        if (monitor.isAuthenticated()) {
-            Intent intent = new Intent(this, waitActivity.class);
-            startActivity(intent);
-        } else {
-            view.post(() -> Toast.makeText(view.getContext(), R.string.loginFail, Toast.LENGTH_LONG).show());;
-        }
-
-
-        user.setText("");
-        pass.setText("");
+        monitor.login(user.getText().toString(), pass.getText().toString(), view, this);
     }
 
     public void onHowToPlay(View view) {
@@ -100,5 +86,10 @@ public class WelcomeActivity extends AppCompatActivity {
         builder.setMessage(R.string.HowToPlayMessage);
         builder.setPositiveButton(android.R.string.ok, null);
         builder.show();
+    }
+
+    public void onSignUp(View view) {
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
     }
 }

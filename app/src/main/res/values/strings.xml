@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">Group 2</string>
     <!-- Welcome -->
-    <string name="WelcomeText">Welcome Players!</string>
-    <string name="NameInput1Hint">Username</string>
-    <string name="NameInput2Hint">Password</string>
-    <string name="RoundsInputHint">Number of Rounds (1-inf)</string>
+    <string name="WelcomeText">Welcome Player!</string>
+    <string name="UsernameInputHint">Username</string>
+    <string name="EmailInputHint">&#8230;@gmail.com</string>
+    <string name="PasswordInputHint">Password</string>
+    <string name="PasswordInput2Hint">Verify Password</string>
+    <string name="RoundsInputHint">Number of Rounds</string>
     <string name="StartButtonText">START GAME</string>
     <string name="HowToPlayButtonText">HOW TO PLAY</string>
+    <string name="CreateUserText">CREATE ACCOUNT</string>
     <string name="HowToPlayTitle">How To Play</string>
     <string name="HowToPlayMessage">GOAL\n\n
 Collect as many coins as possible using the capture options. The player with the most coins at the
@@ -46,7 +49,9 @@ CAPTURE OPTIONS\n\n
     <string name="Player2ScoreString">Player 2 Score</string>
     <string name="winner_string">WINNER</string>
     <string name="return_string">PLAY AGAIN!</string>
-    <string name="waiting_for_game">Waiting for Game...</string>
-    <string name="loginFail">Login Failed. Please try again</string>
+    <string name="waiting_for_game">Waiting for Game&#8230;</string>
+    <string name="loginFail">Login Failed.</string>
+    <string name="badPass">Passwords do not match.</string>
+    <string name="accountFail">Account Creation Failed.</string>
 </resources>
 

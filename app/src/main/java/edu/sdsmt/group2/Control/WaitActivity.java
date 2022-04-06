@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import edu.sdsmt.group2.R;
 
-public class waitActivity extends AppCompatActivity {
+public class WaitActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

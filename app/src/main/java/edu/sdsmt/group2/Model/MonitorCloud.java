@@ -1,16 +1,15 @@
 package edu.sdsmt.group2.Model;
 
-import android.content.Intent;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,21 +19,20 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Objects;
 
-import edu.sdsmt.group2.Control.SignUpActivity;
-import edu.sdsmt.group2.Control.WaitActivity;
-import edu.sdsmt.group2.Control.WelcomeActivity;
-import edu.sdsmt.group2.R;
-
-public class Cloud {
+public class MonitorCloud {
     private static final String TAG = "monitor";
     private final FirebaseAuth userAuth = FirebaseAuth.getInstance();
     private FirebaseUser firebaseUser;
     private final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users");
+    private boolean authenticated = false;
+    private boolean created = false;
 
-    public final static Cloud INSTANCE = new Cloud();
-    private Cloud() {}
+    public final static MonitorCloud INSTANCE = new MonitorCloud();
+    private MonitorCloud() {
+        startAuthListening();
+    }
 
-    public void createUser(String user, String email, String pass, View view, SignUpActivity activity) {
+    public void createUser(String user, String email, String pass) {
         Task<AuthResult> result = userAuth.createUserWithEmailAndPassword(email, pass);
         result.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -47,20 +45,19 @@ public class Cloud {
                 res.put("/" + firebaseUser.getUid() + "/password", pass);
                 res.put("/" + firebaseUser.getUid() + "/lfg", true);
                 userRef.updateChildren(res);
-                activity.finish();
+                created = true;
             } else {
-                view.post(() -> Toast.makeText(view.getContext(), R.string.accountFail, Toast.LENGTH_LONG).show());
                 Log.d(TAG, "createUserWithEmail:failed: " + Objects.requireNonNull(task.getException()).getMessage());
+                created = false;
             }
         });
     }
 
-    public void login(String user, String pass, View view, WelcomeActivity activity) {
+    public void login(String user, String pass) {
         userRef.child("usernames").child(user).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                signIn(snapshot.getValue(String.class), pass, view, activity);
-                startAuthListening();
+                signIn(snapshot.getValue(String.class), pass);
             }
 
             @Override
@@ -68,14 +65,15 @@ public class Cloud {
         });
     }
 
-    private void signIn(String email, String pass, View view, WelcomeActivity activity) {
-        userAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(task -> {
+    private void signIn(String email, String pass) {
+        Task<AuthResult> result = userAuth.signInWithEmailAndPassword(email, pass);
+        result.addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                activity.startActivity(new Intent(activity, WaitActivity.class));
-                Log.d(TAG, "signInWithEmail:onComplete: " + task.isSuccessful());
+                Log.d(TAG, "signInWithEmail:onComplete: "+ task.isSuccessful());
+                authenticated = true;
             } else {
-                view.post(() -> Toast.makeText(view.getContext(), R.string.loginFail, Toast.LENGTH_LONG).show());
                 Log.d(TAG, "signInWithEmail:failed", task.getException());
+                authenticated = false;
             }
         });
     }
@@ -83,10 +81,11 @@ public class Cloud {
     private void startAuthListening() {
         userAuth.addAuthStateListener(firebaseAuth -> {
             firebaseUser = firebaseAuth.getCurrentUser();
-            if (firebaseUser != null)
+            if (firebaseUser != null) {
                 Log.d(TAG, "onAuthStateChanged:signed_in: " +  firebaseUser.getUid());
-            else
+            } else {
                 Log.d(TAG, "onAuthStateChanged:signed_out");
+            }
         });
     }
 
@@ -95,5 +94,13 @@ public class Cloud {
             return "";
         else
             return firebaseUser.getUid();
+    }
+
+    public boolean isAuthenticated() {
+        return authenticated;
+    }
+
+    public boolean isCreated() {
+        return created;
     }
 }
