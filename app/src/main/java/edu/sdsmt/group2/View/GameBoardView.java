@@ -11,9 +11,13 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.google.firebase.database.DataSnapshot;
+
 import java.util.Random;
 import edu.sdsmt.group2.Model.CaptureObject;
 import edu.sdsmt.group2.Model.CircleCapture;
+import edu.sdsmt.group2.Model.Cloud;
 import edu.sdsmt.group2.Model.Collectable;
 import edu.sdsmt.group2.Model.GameBoard;
 import edu.sdsmt.group2.Model.LineCapture;
@@ -26,6 +30,7 @@ public class GameBoardView extends View {
     private static final String PREVIOUS_ANGLE = "gameBoard.PreviousAngle";
     private static final String SCREEN_SIZE = "gameBoard.ScreenSize";
     private static final String ROUNDS = "gameBoard.rounds";
+    private Cloud cloud;
     private GameBoard board;
     private float aspect;
     private static final Random random = new Random();
@@ -109,6 +114,7 @@ public class GameBoardView extends View {
         aspect = metrics.widthPixels / (float)metrics.heightPixels;
 
         board = new GameBoard(getContext());
+
 
         fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         fillPaint.setColor(0xffcccccc);
@@ -353,4 +359,5 @@ public class GameBoardView extends View {
     public String getPlayer1Name() { return board.getPlayer1Name(); }
 
     public String getPlayer2Name() { return board.getPlayer2Name(); }
+
 }

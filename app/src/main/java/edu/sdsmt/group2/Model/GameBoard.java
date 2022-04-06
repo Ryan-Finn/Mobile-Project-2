@@ -2,12 +2,20 @@ package edu.sdsmt.group2.Model;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class GameBoard {
     private static final String PLAYER_NAMES ="GameBoard.playerNames" ;
     private static final String PLAYER_SCORES ="GameBoard.playerScores" ;
     private static final String CURRENT_PLAYER_ID = "GameBoard.currentPlayerScore";
+    private final FirebaseAuth userAuth = FirebaseAuth.getInstance();
+    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
     private final ArrayList<Collectable> collectables = new ArrayList<>();
     private Player currentPlayer;
     private final ArrayList<Player> players = new ArrayList<>();
@@ -36,14 +44,23 @@ public class GameBoard {
         switch(currentPlayer.getId()) {
             case 0:
                 players.get(0).incScore(collected.size());
+                gameRef.child("player").setValue(1);
+                gameRef.child("p0Score").setValue(players.get(0).getScore());
+                gameRef.child("turn").setValue(getRounds());
+                gameRef.child("collectables").setValue(collectables);
                 currentPlayer = players.get(1);
                 break;
             case 1:
                 players.get(1).incScore(collected.size());
+                gameRef.child("player").setValue(0);
+                gameRef.child("p0Score").setValue(players.get(1).getScore());
+                gameRef.child("turn").setValue(getRounds());
+                gameRef.child("collectables").setValue(collectables);
                 currentPlayer = players.get(0);
                 rounds--;
                 break;
         }
+
     }
 
     public void saveInstanceState( Bundle bundle) {
