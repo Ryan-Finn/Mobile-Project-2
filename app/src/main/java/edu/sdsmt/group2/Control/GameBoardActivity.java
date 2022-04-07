@@ -31,7 +31,7 @@ import edu.sdsmt.group2.View.GameBoardView;
 
 public class GameBoardActivity extends AppCompatActivity {
     private GameBoardView view;
-    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
+    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game2");
     public static final String CAPTURED_INT = "edu.sdsmt.group2.RETURN_MESSAGE";
     private TextView player1Name;
     private TextView player2Name;
@@ -40,6 +40,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private TextView rounds;
     private Button capture;
     private ActivityResultLauncher<Intent> captureResultLauncher;
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle bundle) {
         super.onSaveInstanceState(bundle);
@@ -61,14 +62,15 @@ public class GameBoardActivity extends AppCompatActivity {
 
         //get player names and no of rounds from prev
         Intent intent = getIntent();
+        int player = intent.getIntExtra(WaitActivity.PLAYER, 1);
         String name1 = intent.getStringExtra(WaitActivity.PLAYER1);
         String name2 = intent.getStringExtra(WaitActivity.PLAYER2);
-        String r = "5";
+        int r = 5;
 
-        view.addPlayer(name1,0);
-        view.addPlayer(name2,1);
-        view.setRounds(Integer.parseInt(r));
-        view.setDefaultPlayer();
+        view.addPlayer(name1,1, this);
+        view.addPlayer(name2,2, this);
+        view.setRounds(r, this);
+        view.setPlayer(player);
 
         player1Name = findViewById(R.id.player1Name);
         player2Name = findViewById(R.id.player2Name);
@@ -81,9 +83,8 @@ public class GameBoardActivity extends AppCompatActivity {
         player2Score.setText("0");
         player2Name.setText(name2);
         player1Score.setText("0");
-        rounds.setText(r);
+        rounds.setText("" + r);
         player1Name.setTextColor(Color.parseColor("#FF0000"));
-
 
         //any target
         ActivityResultContracts.StartActivityForResult contract =
@@ -100,7 +101,7 @@ public class GameBoardActivity extends AppCompatActivity {
         });
     }
 
-    private void isEndGame() {
+    public void isEndGame() {
         if(view.isEndGame()) {
             endGame(null);
         }
@@ -135,17 +136,18 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void updateGUI() {
+    public void updateGUI() {
         int red = Color.parseColor("#FF0000");
         int black = Color.parseColor("#FFFFFF");
 
         switch (view.getCurrentPlayerId()) {
-            case 0:Log.i("Inside 0", String.valueOf(view.getCurrentPlayerId()));
+            case 1:
+                Log.i("Inside 1", String.valueOf(view.getCurrentPlayerId()));
                 player1Name.setTextColor(red);
                 player2Name.setTextColor(black);
                 break;
-            case 1:
-                Log.i("Inside 1", String.valueOf(view.getCurrentPlayerId()));
+            case 2:
+                Log.i("Inside 2", String.valueOf(view.getCurrentPlayerId()));
                 player2Name.setTextColor(red);
                 player1Name.setTextColor(black);
                 break;
@@ -153,7 +155,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         player1Score.setText(view.getPlayer1Score());
         player2Score.setText(view.getPlayer2Score());
-        rounds.setText(view.getRounds());
+        rounds.setText("" + view.getRounds());
         capture.setEnabled(view.isCaptureEnabled());
     }
 
