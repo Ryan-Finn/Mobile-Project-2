@@ -36,6 +36,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private TextView rounds;
     private Button capture;
     private ActivityResultLauncher<Intent> captureResultLauncher;
+    private ValueEventListener listener;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle bundle) {
@@ -62,11 +63,10 @@ public class GameBoardActivity extends AppCompatActivity {
         int player = intent.getIntExtra(WaitActivity.PLAYER, 1);
         String name1 = intent.getStringExtra(WaitActivity.PLAYER1);
         String name2 = intent.getStringExtra(WaitActivity.PLAYER2);
-        int r = 5;
 
         view.addPlayer(name1,1);
         view.addPlayer(name2,2);
-        view.setRounds(r);
+        view.setRounds(5);
         view.setPlayer(player);
 
         if (player == 2)
@@ -83,7 +83,7 @@ public class GameBoardActivity extends AppCompatActivity {
         player2Score.setText("0");
         player2Name.setText(name2);
         player1Score.setText("0");
-        rounds.setText("" + r);
+        rounds.setText("5");
 
         //any target
         ActivityResultContracts.StartActivityForResult contract =
@@ -108,6 +108,9 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     private void endGame(String winner) {
+        gameRef.child("nextPlayer").removeEventListener(listener);
+        view.destroy();
+
         int player1Score = Integer.parseInt(view.getPlayer1Score());
         int player2Score = Integer.parseInt(view.getPlayer2Score());
 
@@ -128,18 +131,19 @@ public class GameBoardActivity extends AppCompatActivity {
                 winner = "TIE!";
         }
 
-        winner = "Winner:\n"+winner;
+        winner = "Winner:\n" + winner;
 
-        finish();
         intent.putExtra(EndGameActivity.WINNER_MESSAGE, winner);
         startActivity(intent);
+        finish();
     }
 
     @SuppressLint("ClickableViewAccessibility")
     public void updateGUI() {
+        String text = "" + view.getRounds();
         player1Score.setText(view.getPlayer1Score());
         player2Score.setText(view.getPlayer2Score());
-        rounds.setText("" + view.getRounds());
+        rounds.setText(text);
         capture.setEnabled(view.isCaptureEnabled());
         isEndGame();
     }
@@ -162,11 +166,11 @@ public class GameBoardActivity extends AppCompatActivity {
         // for it to be changed back to this player's id
         // GRADING: TIMEOUT
         final boolean[] timedOut = {true};
-        ValueEventListener listener = new ValueEventListener() {
+        listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // check if gameRef.child("nextPlayer") has returned to this player's id/name
-                if (snapshot.getValue(Integer.class) == getIntent().getIntExtra(WaitActivity.PLAYER, 1)) {
+                if (snapshot.exists() && snapshot.getValue(Integer.class) != null && snapshot.getValue(Integer.class) == getIntent().getIntExtra(WaitActivity.PLAYER, 1)) {
                     timedOut[0] = false;
                     waitdlg.cancel();
                     // update values from database
@@ -208,10 +212,5 @@ public class GameBoardActivity extends AppCompatActivity {
     public void onCaptureOptionsClick(View view) {
         Intent switchActivityIntent = new Intent(this, CaptureSelectionActivity.class);
         captureResultLauncher.launch(switchActivityIntent);
-    }
-
-    public void finish() {
-        super.finish();
-        view.onDestroy();
     }
 }

@@ -30,7 +30,8 @@ public class GameBoard {
     private final static String IDS = "GameBoard.ids";
     private int rounds;
     private final Context context;
-    private ValueEventListener collects, next, score1, score2, round;
+    private final ValueEventListener collects;
+    private ValueEventListener next, score1, score2, round;
 
     public GameBoard(Context context, GameBoardView gbv) {
         this.context = context;
@@ -114,7 +115,8 @@ public class GameBoard {
         gameRef.child("round").addValueEventListener(round);
     }
 
-    public void onDestroy() {
+    public void destroy() {
+        gameRef.child("collectables").removeEventListener(collects);
         gameRef.child("nextPlayer").removeEventListener(next);
         gameRef.child("p1Score").removeEventListener(score1);
         gameRef.child("p2Score").removeEventListener(score2);
@@ -210,8 +212,6 @@ public class GameBoard {
     }
 
     public int getRounds() { return rounds; }
-
-    public int getCurrentPlayerId() { return currentPlayer.getId(); }
 
     public String getPlayer1Score() { return String.valueOf(players.get(0).getScore()); }
 

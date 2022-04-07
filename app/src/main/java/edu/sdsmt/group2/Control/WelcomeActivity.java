@@ -1,50 +1,60 @@
 package edu.sdsmt.group2.Control;
 
 /* *
- * Project 1 Grading
- *
- * Group:
- * Done 6pt No redundant activities
- * Done 6pt How to play dialog
- * Done 6pt Icons
- * Done 6pt End activity
- * Done 6pt Back button handled
- * How to open the "how to play dialog": Click on the how to play button
- *
- * Individual:
- *
- * 	Play activity and custom view
- *
- * 		Done 9pt Activity appearance
- * 		Done 16pt Static Custom View
- * 		Done 20pt Dynamic part of the Custom View
- * 		Done 15pt Rotation
- *
- * 	Welcome activity and Game Class
- *
- * 		Done 13pt Welcome activity appearance
- * 		Done 20pt Applying capture rules
- * 		Done 12pt Game state
- * 		Done 15pt Rotation
- * 		What is the probability of the rectangle capture: starts with 50% and changes proportional
- *       to the scaling. So if 2 times larger, probability is 25%
- *
- * 	Capture activity and activity sequencing
- *
- * 		Done 9pt Capture activity appearance
- * 		Done 16pt Player round sequencing
- * 		Done 20pt Move to next activity
- * 		Done 15pt Rotation
- *
- * 	Timer
- *
- * 		NA 9pt Timer activity
- * 		NA 24pt Graphic
- * 		NA 12pt Player turn end
- * 		NA 15pt Rotation
- *
- *
- * Please list any additional rules that may be needed to properly grade your project:
+ * Project 2 Grading
+
+firebase login: ryan.finn.firebase@gmail.com
+firebase password: Psr4&igk3$5EH@Qb
+Time out period: 15s
+How to reset database (file or button): file
+Reminder: Mark where the timeout period is set with GRADING: TIMEOUT
+
+
+Group:
+
+__X__ 6pt Game still works and Database setup
+__X__ 8pt Database setup\reset
+__X__ 8pt New user activity
+__X__ 18pt Opening\login activity
+____ 5pt rotation
+
+
+Individual:
+
+	Sequencing
+		__X__ 4pt Registration sequence
+		__X__ 9pt Login Sequence
+		__X__ 18pt Play Sequence
+		__X__ 9pt Exiting menu, and handlers
+		____ 5pt rotation
+
+
+	Upload
+
+		__X__ 6pt intial setup
+		__X__ 6pt waiting
+		__X__ 17pt store game state
+		__X__ 11pt notify end/early exits
+		____ 5pt rotation
+
+
+	Download
+
+		__X__ 6pt intial setup
+		__X__ 6pt waiting
+		__X__ 17pt store game state
+		__X__ 11pt grab and forward end/early exits
+		____ 5pt rotation
+
+
+	Monitor Waiting
+		__X__ 10pt inital setup
+		__X__ 12pt Uploading the 3 state
+		__X__ 12pt Downloading the 3 state
+		__X__ 6pt UI update
+		____ 5pt rotation
+
+Please list any additional rules that may be needed to properly grade your project:
  */
 
 import android.content.Intent;

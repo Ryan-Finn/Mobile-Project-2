@@ -89,8 +89,6 @@ public class Collectable {
         return id;
     }
 
-    public boolean getShuffle() { return this.doShuffle; }
-
     public float getRadius() {return (float) this.width * scale / 2;}
 
     public void setRelX(float x) {

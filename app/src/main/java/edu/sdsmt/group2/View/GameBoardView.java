@@ -345,8 +345,8 @@ public class GameBoardView extends View {
         board.addPlayer(name, id);
     }
 
-    public void onDestroy() {
-        board.onDestroy();
+    public void destroy() {
+        board.destroy();
     }
 
     public void setRounds(int r) { board.setRounds(r); }

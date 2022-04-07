@@ -6,7 +6,6 @@
     <string name="EmailInputHint">&#8230;@gmail.com</string>
     <string name="PasswordInputHint">Password</string>
     <string name="PasswordInput2Hint">Verify Password</string>
-    <string name="RoundsInputHint">Number of Rounds</string>
     <string name="StartButtonText">START GAME</string>
     <string name="HowToPlayButtonText">HOW TO PLAY</string>
     <string name="CreateUserText">CREATE ACCOUNT</string>
@@ -31,9 +30,7 @@ CAPTURE OPTIONS\n\n
     Invalid number of rounds will result in default settings for the rounds.</string>
 
     <!-- GameBoard -->
-    <string name="Name1">Player 1</string>
     <string name="Rounds">Rounds</string>
-    <string name="Name2">Player 2</string>
     <string name="capture_options">Capture Options</string>
     <string name="capture">Capture!</string>
     <string name="QUIT_GAME">Quit Game?</string>

@@ -32,16 +32,17 @@ public class EndGameActivity extends AppCompatActivity {
         player1.setText(intent.getStringExtra(PLAYER1_MESSAGE));
         player2.setText(intent.getStringExtra(PLAYER2_MESSAGE));
         winner.setText(intent.getStringExtra(WINNER_MESSAGE));
+        gameRef.removeValue();
     }
 
     @Override
     public void onBackPressed() {
-        gameRef.removeValue();
+        //gameRef.removeValue();
         finish();
     }
 
     public void onReturnClick(View view) {
-        gameRef.removeValue();
+        //gameRef.removeValue();
         finish();
     }
 }
