@@ -13,6 +13,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Random;
 import edu.sdsmt.group2.Model.CaptureObject;
@@ -30,7 +32,6 @@ public class GameBoardView extends View {
     private static final String PREVIOUS_ANGLE = "gameBoard.PreviousAngle";
     private static final String SCREEN_SIZE = "gameBoard.ScreenSize";
     private static final String ROUNDS = "gameBoard.rounds";
-    private Cloud cloud;
     private GameBoard board;
     private float aspect;
     private static final Random random = new Random();
@@ -305,7 +306,7 @@ public class GameBoardView extends View {
 
         // Save the capture type & data
         bundle.putInt(CAPTURE_TYPE, captureType);
-        bundle.putString(ROUNDS, board.getRounds());
+        bundle.putString(ROUNDS, "" + board.getRounds());
         if (capture != null) {
             xPos = capture.getX() / screenSize[0];
             yPos = capture.getY() / screenSize[1];
@@ -344,7 +345,7 @@ public class GameBoardView extends View {
 
     public void setRounds(int r) { board.setRounds(r); }
 
-    public String getRounds(){ return board.getRounds(); }
+    public int getRounds(){ return board.getRounds(); }
 
     public String getPlayer1Score() { return board.getPlayer1Score(); }
 
@@ -354,7 +355,9 @@ public class GameBoardView extends View {
 
     public boolean isEndGame() { return board.isEndGame(); }
 
-    public void setDefaultPlayer() { board.setDefaultPlayer(); }
+    //public void setDefaultPlayer() { board.setDefaultPlayer(); }
+
+    public void setPlayer(int player) { board.setPlayer(player); }
 
     public String getPlayer1Name() { return board.getPlayer1Name(); }
 

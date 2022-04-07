@@ -25,4 +25,8 @@ public class Player {
     public void incScore(int add) {
         this.score += add;
     }
+
+    public void setScore(int scr) {
+        this.score = scr;
+    }
 }

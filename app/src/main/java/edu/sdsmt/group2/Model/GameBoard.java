@@ -2,19 +2,25 @@ package edu.sdsmt.group2.Model;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import edu.sdsmt.group2.Control.WelcomeActivity;
 
 public class GameBoard {
     private static final String PLAYER_NAMES ="GameBoard.playerNames" ;
     private static final String PLAYER_SCORES ="GameBoard.playerScores" ;
     private static final String CURRENT_PLAYER_ID = "GameBoard.currentPlayerScore";
-    private final FirebaseAuth userAuth = FirebaseAuth.getInstance();
     private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
     private final ArrayList<Collectable> collectables = new ArrayList<>();
     private Player currentPlayer;
@@ -27,10 +33,39 @@ public class GameBoard {
 
     public GameBoard(Context context) {
         this.context = context;
-        for (int i = 0; i < 21; i++) {
-            Collectable collectable = new Collectable(context, i, 0.2f);
-            collectables.add(collectable);
-        }
+
+        for (int i = 0; i < 21; i++)
+            collectables.add(new Collectable(context, i, 0.2f));
+
+        gameRef.child("collectables").setValue(collectables);
+        gameRef.child("p1Score").setValue(0);
+        gameRef.child("p2Score").setValue(0);
+        gameRef.child("round").setValue(5);
+
+        gameRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                players.get(0).setScore(snapshot.child("p1Score").getValue(Integer.class));
+                players.get(1).setScore(snapshot.child("p2Score").getValue(Integer.class));
+                rounds = snapshot.child("round").getValue(Integer.class);
+
+                int i = 0;
+                for (DataSnapshot obj : snapshot.child("collectables").getChildren()) {
+                    Collectable collectable = new Collectable(context, obj.child("id").getValue(Integer.class), 0.2f);
+                    collectable.setX(obj.child("x").getValue(Float.class));
+                    collectable.setX(obj.child("y").getValue(Float.class));
+                    collectable.setX(obj.child("relX").getValue(Float.class));
+                    collectable.setX(obj.child("relY").getValue(Float.class));
+                    collectable.setShuffle(false);
+                    collectables.set(i, collectable);
+                    i++;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
     public ArrayList<Collectable> getCollectables() {
@@ -41,26 +76,27 @@ public class GameBoard {
         ArrayList<Collectable> collected = capture.getContainedCollectables(collectables);
         for (Collectable c : collected)
             collectables.remove(c);
-        switch(currentPlayer.getId()) {
-            case 0:
-                players.get(0).incScore(collected.size());
-                gameRef.child("player").setValue(1);
-                gameRef.child("p0Score").setValue(players.get(0).getScore());
-                gameRef.child("turn").setValue(getRounds());
-                gameRef.child("collectables").setValue(collectables);
-                currentPlayer = players.get(1);
-                break;
-            case 1:
-                players.get(1).incScore(collected.size());
-                gameRef.child("player").setValue(0);
-                gameRef.child("p0Score").setValue(players.get(1).getScore());
-                gameRef.child("turn").setValue(getRounds());
-                gameRef.child("collectables").setValue(collectables);
-                currentPlayer = players.get(0);
-                rounds--;
-                break;
-        }
 
+        int otherPlayer = currentPlayer.getId() % 2 + 1;
+
+        currentPlayer.incScore(collected.size());
+        gameRef.child("collectables").setValue(collectables);
+        gameRef.child("p" + currentPlayer.getId() + "Score").setValue(currentPlayer.getScore());
+        gameRef.child("round").setValue(getRounds());
+        gameRef.child("nextPlayer").setValue(otherPlayer);
+
+        gameRef.child("p" + otherPlayer + "Score").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                players.get(otherPlayer - 1).setScore(snapshot.getValue(Integer.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        if (currentPlayer.getId() == 2)
+            rounds--;
     }
 
     public void saveInstanceState( Bundle bundle) {
@@ -120,16 +156,22 @@ public class GameBoard {
 
     public boolean isEndGame(){ return rounds <= 0 || collectables.isEmpty(); }
 
-    public void addPlayer(String name, int id) {players.add(new Player(name, id)); }
+    public void addPlayer(String name, int id) {
+        players.add(new Player(name, id));
+    }
 
     public void setDefaultPlayer() {
         if (!players.isEmpty())
             currentPlayer = players.get(0);
     }
 
+    public void setPlayer(int player) {
+        currentPlayer = players.get(player - 1);
+    }
+
     public void setRounds(int r) { rounds = r; }
 
-    public String getRounds() { return String.valueOf(rounds); }
+    public int getRounds() { return rounds; }
 
     public int getCurrentPlayerId() { return currentPlayer.getId(); }
 

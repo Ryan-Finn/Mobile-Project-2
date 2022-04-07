@@ -40,6 +40,7 @@ public class GameBoardActivity extends AppCompatActivity {
     private TextView rounds;
     private Button capture;
     private ActivityResultLauncher<Intent> captureResultLauncher;
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle bundle) {
         super.onSaveInstanceState(bundle);
@@ -61,14 +62,15 @@ public class GameBoardActivity extends AppCompatActivity {
 
         //get player names and no of rounds from prev
         Intent intent = getIntent();
+        int player = intent.getIntExtra(WaitActivity.PLAYER, 1);
         String name1 = intent.getStringExtra(WaitActivity.PLAYER1);
         String name2 = intent.getStringExtra(WaitActivity.PLAYER2);
-        String r = "5";
+        int r = 5;
 
-        view.addPlayer(name1,0);
-        view.addPlayer(name2,1);
-        view.setRounds(Integer.parseInt(r));
-        view.setDefaultPlayer();
+        view.addPlayer(name1,1);
+        view.addPlayer(name2,2);
+        view.setRounds(r);
+        view.setPlayer(player);
 
         player1Name = findViewById(R.id.player1Name);
         player2Name = findViewById(R.id.player2Name);
@@ -81,7 +83,7 @@ public class GameBoardActivity extends AppCompatActivity {
         player2Score.setText("0");
         player2Name.setText(name2);
         player1Score.setText("0");
-        rounds.setText(r);
+        rounds.setText("" + r);
         player1Name.setTextColor(Color.parseColor("#FF0000"));
 
 
@@ -132,12 +134,13 @@ public class GameBoardActivity extends AppCompatActivity {
         int black = Color.parseColor("#FFFFFF");
 
         switch (view.getCurrentPlayerId()) {
-            case 0:Log.i("Inside 0", String.valueOf(view.getCurrentPlayerId()));
+            case 1:
+                Log.i("Inside 1", String.valueOf(view.getCurrentPlayerId()));
                 player1Name.setTextColor(red);
                 player2Name.setTextColor(black);
                 break;
-            case 1:
-                Log.i("Inside 1", String.valueOf(view.getCurrentPlayerId()));
+            case 2:
+                Log.i("Inside 2", String.valueOf(view.getCurrentPlayerId()));
                 player2Name.setTextColor(red);
                 player1Name.setTextColor(black);
                 break;
@@ -145,7 +148,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         player1Score.setText(view.getPlayer1Score());
         player2Score.setText(view.getPlayer2Score());
-        rounds.setText(view.getRounds());
+        rounds.setText("" + view.getRounds());
         capture.setEnabled(view.isCaptureEnabled());
     }
 
@@ -208,8 +211,6 @@ public class GameBoardActivity extends AppCompatActivity {
         };
         timer.schedule(timerTask, 10000);
     }
-
-
 
     //GRADING: BACK
     @Override

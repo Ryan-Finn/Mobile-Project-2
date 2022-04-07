@@ -21,6 +21,7 @@ import edu.sdsmt.group2.R;
 public class WaitActivity extends AppCompatActivity {
     private final FirebaseAuth userAuth = FirebaseAuth.getInstance();
     private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
+    public final static String PLAYER = "edu.sdsmt.group2.PLAYER";
     public final static String PLAYER1 = "edu.sdsmt.group2.PLAYER1";
     public final static String PLAYER2 = "edu.sdsmt.group2.PLAYER2";
 
@@ -50,8 +51,10 @@ public class WaitActivity extends AppCompatActivity {
                         !Objects.equals(snapshot.getValue(String.class), Objects.requireNonNull(userAuth.getCurrentUser()).getUid())) {
                     gameRef.child("player2").setValue(getIntent().getStringExtra(WelcomeActivity.NAME));
                     intent.putExtra(PLAYER1, snapshot.getValue(String.class));
+                    intent.putExtra(PLAYER, 2);
                 } else {
                     gameRef.child("player1").setValue(getIntent().getStringExtra(WelcomeActivity.NAME));
+                    intent.putExtra(PLAYER, 1);
                     intent.putExtra(PLAYER1, getIntent().getStringExtra(WelcomeActivity.NAME));
                 }
             }
