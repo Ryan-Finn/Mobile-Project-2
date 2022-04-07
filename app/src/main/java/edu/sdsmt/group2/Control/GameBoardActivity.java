@@ -1,10 +1,5 @@
 package edu.sdsmt.group2.Control;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,12 +10,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,7 +31,7 @@ import edu.sdsmt.group2.View.GameBoardView;
 
 public class GameBoardActivity extends AppCompatActivity {
     private GameBoardView view;
-    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game2");
+    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
     public static final String CAPTURED_INT = "edu.sdsmt.group2.RETURN_MESSAGE";
     private TextView player1Name;
     private TextView player2Name;
@@ -38,7 +40,6 @@ public class GameBoardActivity extends AppCompatActivity {
     private TextView rounds;
     private Button capture;
     private ActivityResultLauncher<Intent> captureResultLauncher;
-
     @Override
     protected void onSaveInstanceState(@NonNull Bundle bundle) {
         super.onSaveInstanceState(bundle);
@@ -60,15 +61,14 @@ public class GameBoardActivity extends AppCompatActivity {
 
         //get player names and no of rounds from prev
         Intent intent = getIntent();
-        int player = intent.getIntExtra(WaitActivity.PLAYER, 1);
         String name1 = intent.getStringExtra(WaitActivity.PLAYER1);
         String name2 = intent.getStringExtra(WaitActivity.PLAYER2);
-        int r = 5;
+        String r = "5";
 
-        view.addPlayer(name1,1, this);
-        view.addPlayer(name2,2, this);
-        view.setRounds(r, this);
-        view.setPlayer(player);
+        view.addPlayer(name1,0);
+        view.addPlayer(name2,1);
+        view.setRounds(Integer.parseInt(r));
+        view.setDefaultPlayer();
 
         player1Name = findViewById(R.id.player1Name);
         player2Name = findViewById(R.id.player2Name);
@@ -81,7 +81,7 @@ public class GameBoardActivity extends AppCompatActivity {
         player2Score.setText("0");
         player2Name.setText(name2);
         player1Score.setText("0");
-        rounds.setText("" + r);
+        rounds.setText(r);
         player1Name.setTextColor(Color.parseColor("#FF0000"));
 
 
@@ -100,45 +100,52 @@ public class GameBoardActivity extends AppCompatActivity {
         });
     }
 
-    public void isEndGame() {
+    private void isEndGame() {
         if(view.isEndGame()) {
-            String winner = "WINNER\n";
-            int player1Score = Integer.parseInt(view.getPlayer1Score());
-            int player2Score = Integer.parseInt(view.getPlayer2Score());
-
-            Intent intent = new Intent(this, EndGameActivity.class);
-
-            intent.putExtra(EndGameActivity.PLAYER1_MESSAGE, view.getPlayer1Name()
-                    + "'s Score\n" + view.getPlayer1Score());
-            intent.putExtra(EndGameActivity.PLAYER2_MESSAGE, view.getPlayer2Name()
-                    + "'s Score\n" + view.getPlayer2Score());
-
-            //get the winner
-            if (player1Score > player2Score)
-                winner += view.getPlayer1Name();
-            else if (player1Score < player2Score)
-                winner += view.getPlayer2Name();
-            else
-                winner = "TIE!";
-            intent.putExtra(EndGameActivity.WINNER_MESSAGE, winner);
-            startActivity(intent);
-            finish();
+            endGame(null);
         }
     }
 
+    private void endGame(String winner) {
+        int player1Score = Integer.parseInt(view.getPlayer1Score());
+        int player2Score = Integer.parseInt(view.getPlayer2Score());
+
+        Intent intent = new Intent(this, EndGameActivity.class);
+
+        intent.putExtra(EndGameActivity.PLAYER1_MESSAGE, view.getPlayer1Name()
+                + "'s Score\n" + view.getPlayer1Score());
+        intent.putExtra(EndGameActivity.PLAYER2_MESSAGE, view.getPlayer2Name()
+                + "'s Score\n" + view.getPlayer2Score());
+
+        if(winner == null) {
+            //get the winner
+            if (player1Score > player2Score)
+                winner = view.getPlayer1Name();
+            else if (player1Score < player2Score)
+                winner = view.getPlayer2Name();
+            else
+                winner = "TIE!";
+        }
+
+        winner = "Winner:\n"+winner;
+
+        intent.putExtra(EndGameActivity.WINNER_MESSAGE, winner);
+        startActivity(intent);
+        finish();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
-    public void updateGUI() {
+    private void updateGUI() {
         int red = Color.parseColor("#FF0000");
         int black = Color.parseColor("#FFFFFF");
 
         switch (view.getCurrentPlayerId()) {
-            case 1:
-                Log.i("Inside 1", String.valueOf(view.getCurrentPlayerId()));
+            case 0:Log.i("Inside 0", String.valueOf(view.getCurrentPlayerId()));
                 player1Name.setTextColor(red);
                 player2Name.setTextColor(black);
                 break;
-            case 2:
-                Log.i("Inside 2", String.valueOf(view.getCurrentPlayerId()));
+            case 1:
+                Log.i("Inside 1", String.valueOf(view.getCurrentPlayerId()));
                 player2Name.setTextColor(red);
                 player1Name.setTextColor(black);
                 break;
@@ -146,7 +153,7 @@ public class GameBoardActivity extends AppCompatActivity {
 
         player1Score.setText(view.getPlayer1Score());
         player2Score.setText(view.getPlayer2Score());
-        rounds.setText("" + view.getRounds());
+        rounds.setText(view.getRounds());
         capture.setEnabled(view.isCaptureEnabled());
     }
 
@@ -154,18 +161,13 @@ public class GameBoardActivity extends AppCompatActivity {
         view.captureClicked();
         updateGUI();
         isEndGame();
-        //waitForOpponent();
+        // update the current player in firebase
+        gameRef.child("player").setValue(getIntent().getStringExtra(WelcomeActivity.NAME));
+        waitForOpponent();
     }
 
     private void waitForOpponent() {
-//        DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int option) {
-//                if(option == DialogInterface.BUTTON_POSITIVE) {
-//                    finish();
-//                }
-//            }
-//        };
+
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         String dialogMessage = "Waiting for opponent to finish their turn";
         builder.setMessage(dialogMessage);
@@ -182,12 +184,12 @@ public class GameBoardActivity extends AppCompatActivity {
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                // check if gameRef.child("player") has returned to this player's id/name
-//                if (snapshot.getValue(String.class) == ) {
-//                    timedOut[0] = false;
-//                    waitdlg.cancel();
-//                    // advance turn and scores
-//                }
+                // check if gameRef.child("player") has returned to this player's id/name
+                if (Objects.equals(snapshot.getValue(String.class), getIntent().getStringExtra(WelcomeActivity.NAME))) {
+                    timedOut[0] = false;
+                    waitdlg.cancel();
+                    // update values from database
+                }
             }
 
             @Override
@@ -204,11 +206,14 @@ public class GameBoardActivity extends AppCompatActivity {
                     gameRef.child("player").removeEventListener(listener);
                     waitdlg.cancel();
                     Log.d("Timeout", "Win because of timeout");
+                    endGame(getIntent().getStringExtra(WelcomeActivity.NAME));
                 }
             }
         };
         timer.schedule(timerTask, 10000);
     }
+
+
 
     //GRADING: BACK
     @Override
@@ -216,10 +221,7 @@ public class GameBoardActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameBoardActivity.this);
         builder.setTitle(R.string.QUIT_GAME);
         builder.setMessage(R.string.QUIT_GAME_MESSAGE);
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-            finish();
-//            sign out
-        });
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> finish());
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.show();
     }
