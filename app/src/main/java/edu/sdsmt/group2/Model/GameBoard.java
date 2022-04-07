@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import edu.sdsmt.group2.Control.GameBoardActivity;
+import edu.sdsmt.group2.R;
 import edu.sdsmt.group2.View.GameBoardView;
 
 public class GameBoard {
@@ -37,6 +38,7 @@ public class GameBoard {
             collectables.add(new Collectable(context, i, 0.2f));
 
         gameRef.child("collectables").setValue(collectables);
+        gameRef.child("nextPlayer").setValue(1);
         gameRef.child("p1Score").setValue(0);
         gameRef.child("p2Score").setValue(0);
         gameRef.child("round").setValue(5);
@@ -48,12 +50,62 @@ public class GameBoard {
                 for (DataSnapshot obj : snapshot.getChildren()) {
                     Collectable collectable = new Collectable(context, obj.child("id").getValue(Integer.class), 0.2f);
                     collectable.setX(obj.child("x").getValue(Float.class));
-                    collectable.setX(obj.child("y").getValue(Float.class));
-                    collectable.setX(obj.child("relX").getValue(Float.class));
-                    collectable.setX(obj.child("relY").getValue(Float.class));
+                    collectable.setY(obj.child("y").getValue(Float.class));
+                    collectable.setRelX(obj.child("relX").getValue(Float.class));
+                    collectable.setRelY(obj.child("relY").getValue(Float.class));
+                    collectable.setShuffle(obj.child("shuffle").getValue(boolean.class));
                     collectables.add(collectable);
                 }
                 gbv.invalidate();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    public void init(GameBoardActivity gba) {
+        gameRef.child("nextPlayer").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                gba.findViewById(R.id.button).setEnabled(snapshot.getValue(Integer.class) == currentPlayer.getId());
+                gba.updateGUI();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        gameRef.child("p1Score").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                players.get(0).setScore(snapshot.getValue(Integer.class));
+                gba.updateGUI();
+                gba.isEndGame();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        gameRef.child("p2Score").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                players.get(1).setScore(snapshot.getValue(Integer.class));
+                gba.updateGUI();
+                gba.isEndGame();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
+        gameRef.child("round").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                rounds = snapshot.getValue(Integer.class);
+                gba.updateGUI();
+                gba.isEndGame();
             }
 
             @Override
@@ -73,13 +125,11 @@ public class GameBoard {
         if (currentPlayer.getId() == 2)
             rounds--;
 
-        int otherPlayer = currentPlayer.getId() % 2 + 1;
-
         currentPlayer.incScore(collected.size());
         gameRef.child("collectables").setValue(collectables);
         gameRef.child("p" + currentPlayer.getId() + "Score").setValue(currentPlayer.getScore());
         gameRef.child("round").setValue(rounds);
-        gameRef.child("nextPlayer").setValue(otherPlayer);
+        gameRef.child("nextPlayer").setValue(currentPlayer.getId() % 2 + 1);
     }
 
     public void saveInstanceState( Bundle bundle) {
@@ -139,42 +189,16 @@ public class GameBoard {
 
     public boolean isEndGame() { return rounds <= 0 || collectables.isEmpty(); }
 
-    public void addPlayer(String name, int id, GameBoardActivity gba) {
+    public void addPlayer(String name, int id) {
         players.add(new Player(name, id));
-        gameRef.child("p" + id + "Score").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                players.get(id - 1).setScore(snapshot.getValue(Integer.class));
-                gba.updateGUI();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-    }
-
-    public void setDefaultPlayer() {
-        if (!players.isEmpty())
-            currentPlayer = players.get(0);
     }
 
     public void setPlayer(int player) {
         currentPlayer = players.get(player - 1);
     }
 
-    public void setRounds(int r, GameBoardActivity gba) {
+    public void setRounds(int r) {
         rounds = r;
-        gameRef.child("round").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                rounds = snapshot.getValue(Integer.class);
-                gba.updateGUI();
-                gba.isEndGame();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
     }
 
     public int getRounds() { return rounds; }

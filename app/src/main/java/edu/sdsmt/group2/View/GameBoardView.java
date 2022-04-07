@@ -107,6 +107,10 @@ public class GameBoardView extends View {
         init(context);
     }
 
+    public void init(GameBoardActivity gba) {
+        board.init(gba);
+    }
+
     private void init(Context context) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         aspect = metrics.widthPixels / (float)metrics.heightPixels;
@@ -337,11 +341,11 @@ public class GameBoardView extends View {
         }
     }
 
-    public void addPlayer(String name, int id, GameBoardActivity gba) {
-        board.addPlayer(name, id, gba);
+    public void addPlayer(String name, int id) {
+        board.addPlayer(name, id);
     }
 
-    public void setRounds(int r, GameBoardActivity gba) { board.setRounds(r, gba); }
+    public void setRounds(int r) { board.setRounds(r); }
 
     public int getRounds(){ return board.getRounds(); }
 

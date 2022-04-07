@@ -3,7 +3,6 @@ package edu.sdsmt.group2.Control;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,8 +32,6 @@ public class GameBoardActivity extends AppCompatActivity {
     private GameBoardView view;
     private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game2");
     public static final String CAPTURED_INT = "edu.sdsmt.group2.RETURN_MESSAGE";
-    private TextView player1Name;
-    private TextView player2Name;
     private TextView player1Score;
     private TextView player2Score;
     private TextView rounds;
@@ -59,6 +56,7 @@ public class GameBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_board);
         view = this.findViewById(R.id.gameBoardView);
+        view.init(this);
 
         //get player names and no of rounds from prev
         Intent intent = getIntent();
@@ -67,13 +65,16 @@ public class GameBoardActivity extends AppCompatActivity {
         String name2 = intent.getStringExtra(WaitActivity.PLAYER2);
         int r = 5;
 
-        view.addPlayer(name1,1, this);
-        view.addPlayer(name2,2, this);
-        view.setRounds(r, this);
+        view.addPlayer(name1,1);
+        view.addPlayer(name2,2);
+        view.setRounds(r);
         view.setPlayer(player);
 
-        player1Name = findViewById(R.id.player1Name);
-        player2Name = findViewById(R.id.player2Name);
+        if (player == 2)
+            findViewById(R.id.button).setEnabled(false);
+
+        TextView player1Name = findViewById(R.id.player1Name);
+        TextView player2Name = findViewById(R.id.player2Name);
         player1Score = findViewById(R.id.player1Score);
         player2Score = findViewById(R.id.player2Score);
         capture = findViewById(R.id.captureButton);
@@ -84,7 +85,6 @@ public class GameBoardActivity extends AppCompatActivity {
         player2Name.setText(name2);
         player1Score.setText("0");
         rounds.setText("" + r);
-        player1Name.setTextColor(Color.parseColor("#FF0000"));
 
         //any target
         ActivityResultContracts.StartActivityForResult contract =
@@ -137,22 +137,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     public void updateGUI() {
-        int red = Color.parseColor("#FF0000");
-        int black = Color.parseColor("#FFFFFF");
-
-        switch (view.getCurrentPlayerId()) {
-            case 1:
-                Log.i("Inside 1", String.valueOf(view.getCurrentPlayerId()));
-                player1Name.setTextColor(red);
-                player2Name.setTextColor(black);
-                break;
-            case 2:
-                Log.i("Inside 2", String.valueOf(view.getCurrentPlayerId()));
-                player2Name.setTextColor(red);
-                player1Name.setTextColor(black);
-                break;
-        }
-
         player1Score.setText(view.getPlayer1Score());
         player2Score.setText(view.getPlayer2Score());
         rounds.setText("" + view.getRounds());
@@ -163,13 +147,10 @@ public class GameBoardActivity extends AppCompatActivity {
         view.captureClicked();
         updateGUI();
         isEndGame();
-        // update the current player in firebase
-        gameRef.child("player").setValue(getIntent().getStringExtra(WelcomeActivity.NAME));
         waitForOpponent();
     }
 
     private void waitForOpponent() {
-
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         String dialogMessage = "Waiting for opponent to finish their turn";
         builder.setMessage(dialogMessage);
@@ -177,8 +158,7 @@ public class GameBoardActivity extends AppCompatActivity {
         android.app.AlertDialog waitdlg = builder.create();
         waitdlg.show();
 
-
-        // the following assumes that gameRef.child("player") has
+        // the following assumes that gameRef.child("nextPlayer") has
         // already been changed to the opponent's id, and waits
         // for it to be changed back to this player's id
         // GRADING: TIMEOUT
@@ -186,8 +166,8 @@ public class GameBoardActivity extends AppCompatActivity {
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // check if gameRef.child("player") has returned to this player's id/name
-                if (Objects.equals(snapshot.getValue(String.class), getIntent().getStringExtra(WelcomeActivity.NAME))) {
+                // check if gameRef.child("nextPlayer") has returned to this player's id/name
+                if (snapshot.getValue(Integer.class) == getIntent().getIntExtra(WaitActivity.PLAYER, 1)) {
                     timedOut[0] = false;
                     waitdlg.cancel();
                     // update values from database
@@ -197,7 +177,7 @@ public class GameBoardActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
         };
-        gameRef.child("player").addValueEventListener(listener);
+        gameRef.child("nextPlayer").addValueEventListener(listener);
 
         Timer timer = new Timer();
         TimerTask timerTask = new TimerTask() {
@@ -205,17 +185,15 @@ public class GameBoardActivity extends AppCompatActivity {
             public void run() {
                 timer.cancel();
                 if (timedOut[0]) {
-                    gameRef.child("player").removeEventListener(listener);
+                    gameRef.child("nextPlayer").removeEventListener(listener);
                     waitdlg.cancel();
                     Log.d("Timeout", "Win because of timeout");
                     endGame(getIntent().getStringExtra(WelcomeActivity.NAME));
                 }
             }
         };
-        timer.schedule(timerTask, 10000);
+        timer.schedule(timerTask, 15000);
     }
-
-
 
     //GRADING: BACK
     @Override
