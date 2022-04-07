@@ -2,11 +2,9 @@ package edu.sdsmt.group2.Model;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,13 +13,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import edu.sdsmt.group2.Control.WelcomeActivity;
+import edu.sdsmt.group2.Control.GameBoardActivity;
+import edu.sdsmt.group2.View.GameBoardView;
 
 public class GameBoard {
     private static final String PLAYER_NAMES ="GameBoard.playerNames" ;
     private static final String PLAYER_SCORES ="GameBoard.playerScores" ;
     private static final String CURRENT_PLAYER_ID = "GameBoard.currentPlayerScore";
-    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
+    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game2");
     private final ArrayList<Collectable> collectables = new ArrayList<>();
     private Player currentPlayer;
     private final ArrayList<Player> players = new ArrayList<>();
@@ -31,7 +30,7 @@ public class GameBoard {
     private int rounds;
     private final Context context;
 
-    public GameBoard(Context context) {
+    public GameBoard(Context context, GameBoardView gbv) {
         this.context = context;
 
         for (int i = 0; i < 21; i++)
@@ -42,29 +41,23 @@ public class GameBoard {
         gameRef.child("p2Score").setValue(0);
         gameRef.child("round").setValue(5);
 
-        gameRef.addValueEventListener(new ValueEventListener() {
+        gameRef.child("collectables").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                players.get(0).setScore(snapshot.child("p1Score").getValue(Integer.class));
-                players.get(1).setScore(snapshot.child("p2Score").getValue(Integer.class));
-                rounds = snapshot.child("round").getValue(Integer.class);
-
-                int i = 0;
-                for (DataSnapshot obj : snapshot.child("collectables").getChildren()) {
+                collectables.clear();
+                for (DataSnapshot obj : snapshot.getChildren()) {
                     Collectable collectable = new Collectable(context, obj.child("id").getValue(Integer.class), 0.2f);
                     collectable.setX(obj.child("x").getValue(Float.class));
                     collectable.setX(obj.child("y").getValue(Float.class));
                     collectable.setX(obj.child("relX").getValue(Float.class));
                     collectable.setX(obj.child("relY").getValue(Float.class));
-                    collectable.setShuffle(false);
-                    collectables.set(i, collectable);
-                    i++;
+                    collectables.add(collectable);
                 }
+                gbv.invalidate();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 
@@ -77,26 +70,16 @@ public class GameBoard {
         for (Collectable c : collected)
             collectables.remove(c);
 
+        if (currentPlayer.getId() == 2)
+            rounds--;
+
         int otherPlayer = currentPlayer.getId() % 2 + 1;
 
         currentPlayer.incScore(collected.size());
         gameRef.child("collectables").setValue(collectables);
         gameRef.child("p" + currentPlayer.getId() + "Score").setValue(currentPlayer.getScore());
-        gameRef.child("round").setValue(getRounds());
+        gameRef.child("round").setValue(rounds);
         gameRef.child("nextPlayer").setValue(otherPlayer);
-
-        gameRef.child("p" + otherPlayer + "Score").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                players.get(otherPlayer - 1).setScore(snapshot.getValue(Integer.class));
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-
-        if (currentPlayer.getId() == 2)
-            rounds--;
     }
 
     public void saveInstanceState( Bundle bundle) {
@@ -154,10 +137,20 @@ public class GameBoard {
         currentPlayer = new Player(players.get(id).getName(), id);
     }
 
-    public boolean isEndGame(){ return rounds <= 0 || collectables.isEmpty(); }
+    public boolean isEndGame() { return rounds <= 0 || collectables.isEmpty(); }
 
-    public void addPlayer(String name, int id) {
+    public void addPlayer(String name, int id, GameBoardActivity gba) {
         players.add(new Player(name, id));
+        gameRef.child("p" + id + "Score").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                players.get(id - 1).setScore(snapshot.getValue(Integer.class));
+                gba.updateGUI();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
     }
 
     public void setDefaultPlayer() {
@@ -169,7 +162,20 @@ public class GameBoard {
         currentPlayer = players.get(player - 1);
     }
 
-    public void setRounds(int r) { rounds = r; }
+    public void setRounds(int r, GameBoardActivity gba) {
+        rounds = r;
+        gameRef.child("round").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                rounds = snapshot.getValue(Integer.class);
+                gba.updateGUI();
+                gba.isEndGame();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
 
     public int getRounds() { return rounds; }
 

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -20,7 +19,7 @@ import edu.sdsmt.group2.R;
 
 public class WaitActivity extends AppCompatActivity {
     private final FirebaseAuth userAuth = FirebaseAuth.getInstance();
-    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
+    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game2");
     public final static String PLAYER = "edu.sdsmt.group2.PLAYER";
     public final static String PLAYER1 = "edu.sdsmt.group2.PLAYER1";
     public final static String PLAYER2 = "edu.sdsmt.group2.PLAYER2";

@@ -7,11 +7,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +29,7 @@ import edu.sdsmt.group2.View.GameBoardView;
 
 public class GameBoardActivity extends AppCompatActivity {
     private GameBoardView view;
-    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
+    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game2");
     public static final String CAPTURED_INT = "edu.sdsmt.group2.RETURN_MESSAGE";
     private TextView player1Name;
     private TextView player2Name;
@@ -67,9 +65,9 @@ public class GameBoardActivity extends AppCompatActivity {
         String name2 = intent.getStringExtra(WaitActivity.PLAYER2);
         int r = 5;
 
-        view.addPlayer(name1,1);
-        view.addPlayer(name2,2);
-        view.setRounds(r);
+        view.addPlayer(name1,1, this);
+        view.addPlayer(name2,2, this);
+        view.setRounds(r, this);
         view.setPlayer(player);
 
         player1Name = findViewById(R.id.player1Name);
@@ -102,7 +100,7 @@ public class GameBoardActivity extends AppCompatActivity {
         });
     }
 
-    private void isEndGame() {
+    public void isEndGame() {
         if(view.isEndGame()) {
             String winner = "WINNER\n";
             int player1Score = Integer.parseInt(view.getPlayer1Score());
@@ -129,7 +127,7 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void updateGUI() {
+    public void updateGUI() {
         int red = Color.parseColor("#FF0000");
         int black = Color.parseColor("#FFFFFF");
 
@@ -156,7 +154,7 @@ public class GameBoardActivity extends AppCompatActivity {
         view.captureClicked();
         updateGUI();
         isEndGame();
-        waitForOpponent();
+        //waitForOpponent();
     }
 
     private void waitForOpponent() {

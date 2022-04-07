@@ -12,14 +12,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.Random;
+
+import edu.sdsmt.group2.Control.GameBoardActivity;
 import edu.sdsmt.group2.Model.CaptureObject;
 import edu.sdsmt.group2.Model.CircleCapture;
-import edu.sdsmt.group2.Model.Cloud;
 import edu.sdsmt.group2.Model.Collectable;
 import edu.sdsmt.group2.Model.GameBoard;
 import edu.sdsmt.group2.Model.LineCapture;
@@ -114,8 +111,7 @@ public class GameBoardView extends View {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         aspect = metrics.widthPixels / (float)metrics.heightPixels;
 
-        board = new GameBoard(getContext());
-
+        board = new GameBoard(getContext(), this);
 
         fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         fillPaint.setColor(0xffcccccc);
@@ -323,7 +319,7 @@ public class GameBoardView extends View {
 
     public void loadInstanceState(Bundle bundle) {
         board.loadInstanceState(bundle);
-        board.setRounds(Integer.parseInt(bundle.getString(ROUNDS)));
+        //board.setRounds(Integer.parseInt(bundle.getString(ROUNDS)));
         // Set the capture type and saved coordinates
         setCapture(bundle.getInt(CAPTURE_TYPE));
 
@@ -341,9 +337,11 @@ public class GameBoardView extends View {
         }
     }
 
-    public void addPlayer(String name, int id) { board.addPlayer(name, id); }
+    public void addPlayer(String name, int id, GameBoardActivity gba) {
+        board.addPlayer(name, id, gba);
+    }
 
-    public void setRounds(int r) { board.setRounds(r); }
+    public void setRounds(int r, GameBoardActivity gba) { board.setRounds(r, gba); }
 
     public int getRounds(){ return board.getRounds(); }
 
