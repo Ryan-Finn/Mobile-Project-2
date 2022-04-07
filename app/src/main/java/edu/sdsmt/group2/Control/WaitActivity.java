@@ -29,13 +29,13 @@ public class WaitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait);
         Intent intent = new Intent(this, GameBoardActivity.class);
-
         gameRef.child("player2").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getValue(String.class) != null) {
                     intent.putExtra(PLAYER2, snapshot.getValue(String.class));
                     startActivity(intent);
+                    finish();
                 }
             }
 

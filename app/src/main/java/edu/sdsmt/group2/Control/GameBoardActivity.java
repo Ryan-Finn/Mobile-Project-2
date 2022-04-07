@@ -7,18 +7,31 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 import edu.sdsmt.group2.R;
 import edu.sdsmt.group2.View.GameBoardView;
 
 public class GameBoardActivity extends AppCompatActivity {
     private GameBoardView view;
+    private final DatabaseReference gameRef = FirebaseDatabase.getInstance().getReference().child("game");
     public static final String CAPTURED_INT = "edu.sdsmt.group2.RETURN_MESSAGE";
     private TextView player1Name;
     private TextView player2Name;
@@ -120,7 +133,6 @@ public class GameBoardActivity extends AppCompatActivity {
 
         switch (view.getCurrentPlayerId()) {
             case 0:Log.i("Inside 0", String.valueOf(view.getCurrentPlayerId()));
-
                 player1Name.setTextColor(red);
                 player2Name.setTextColor(black);
                 break;
@@ -141,7 +153,63 @@ public class GameBoardActivity extends AppCompatActivity {
         view.captureClicked();
         updateGUI();
         isEndGame();
+        waitForOpponent();
     }
+
+    private void waitForOpponent() {
+//        DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int option) {
+//                if(option == DialogInterface.BUTTON_POSITIVE) {
+//                    finish();
+//                }
+//            }
+//        };
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        String dialogMessage = "Waiting for opponent to finish their turn";
+        builder.setMessage(dialogMessage);
+
+        android.app.AlertDialog waitdlg = builder.create();
+        waitdlg.show();
+
+
+        // the following assumes that gameRef.child("player") has
+        // already been changed to the opponent's id, and waits
+        // for it to be changed back to this player's id
+        // GRADING: TIMEOUT
+        final boolean[] timedOut = {true};
+        ValueEventListener listener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                // check if gameRef.child("player") has returned to this player's id/name
+//                if (snapshot.getValue(String.class) == ) {
+//                    timedOut[0] = false;
+//                    waitdlg.cancel();
+//                    // advance turn and scores
+//                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        };
+        gameRef.child("player").addValueEventListener(listener);
+
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                timer.cancel();
+                if (timedOut[0]) {
+                    gameRef.child("player").removeEventListener(listener);
+                    waitdlg.cancel();
+                    Log.d("Timeout", "Win because of timeout");
+                }
+            }
+        };
+        timer.schedule(timerTask, 10000);
+    }
+
+
 
     //GRADING: BACK
     @Override
@@ -149,7 +217,10 @@ public class GameBoardActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameBoardActivity.this);
         builder.setTitle(R.string.QUIT_GAME);
         builder.setMessage(R.string.QUIT_GAME_MESSAGE);
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> finish());
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            finish();
+//            sign out
+        });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.show();
     }

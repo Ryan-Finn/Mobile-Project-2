@@ -96,6 +96,7 @@ public class WelcomeActivity extends AppCompatActivity {
         loginInfoEditor.commit();
 
         monitor.login(user.getText().toString(), pass.getText().toString(), view, this);
+//        startActivity(new Intent(this, GameBoardActivity.class));
     }
 
     public void onHowToPlay(View view) {
