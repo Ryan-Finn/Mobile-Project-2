@@ -90,11 +90,4 @@ public class Cloud {
                 Log.d(TAG, "onAuthStateChanged:signed_out");
         });
     }
-
-    public String getUserUid() {
-        if (firebaseUser == null)
-            return "";
-        else
-            return firebaseUser.getUid();
-    }
 }

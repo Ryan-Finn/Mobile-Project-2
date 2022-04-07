@@ -345,6 +345,10 @@ public class GameBoardView extends View {
         board.addPlayer(name, id);
     }
 
+    public void onDestroy() {
+        board.onDestroy();
+    }
+
     public void setRounds(int r) { board.setRounds(r); }
 
     public int getRounds(){ return board.getRounds(); }
@@ -353,11 +357,7 @@ public class GameBoardView extends View {
 
     public String getPlayer2Score() { return board.getPlayer2Score(); }
 
-    public int getCurrentPlayerId() { return board.getCurrentPlayerId(); }
-
     public boolean isEndGame() { return board.isEndGame(); }
-
-    //public void setDefaultPlayer() { board.setDefaultPlayer(); }
 
     public void setPlayer(int player) { board.setPlayer(player); }
 

@@ -21,7 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -102,9 +101,10 @@ public class GameBoardActivity extends AppCompatActivity {
     }
 
     public void isEndGame() {
-        if(view.isEndGame()) {
+        if (view.isEndGame())
             endGame(null);
-        }
+        else
+            waitForOpponent();
     }
 
     private void endGame(String winner) {
@@ -130,9 +130,9 @@ public class GameBoardActivity extends AppCompatActivity {
 
         winner = "Winner:\n"+winner;
 
+        finish();
         intent.putExtra(EndGameActivity.WINNER_MESSAGE, winner);
         startActivity(intent);
-        finish();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -141,13 +141,12 @@ public class GameBoardActivity extends AppCompatActivity {
         player2Score.setText(view.getPlayer2Score());
         rounds.setText("" + view.getRounds());
         capture.setEnabled(view.isCaptureEnabled());
+        isEndGame();
     }
 
     public void onCaptureClick(View v) {
         view.captureClicked();
         updateGUI();
-        isEndGame();
-        waitForOpponent();
     }
 
     private void waitForOpponent() {
@@ -201,9 +200,7 @@ public class GameBoardActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameBoardActivity.this);
         builder.setTitle(R.string.QUIT_GAME);
         builder.setMessage(R.string.QUIT_GAME_MESSAGE);
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-            endGame("Opponent, due to forfeit");
-        });
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> endGame("Opponent, due to forfeit"));
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.show();
     }
@@ -211,5 +208,10 @@ public class GameBoardActivity extends AppCompatActivity {
     public void onCaptureOptionsClick(View view) {
         Intent switchActivityIntent = new Intent(this, CaptureSelectionActivity.class);
         captureResultLauncher.launch(switchActivityIntent);
+    }
+
+    public void finish() {
+        super.finish();
+        view.onDestroy();
     }
 }

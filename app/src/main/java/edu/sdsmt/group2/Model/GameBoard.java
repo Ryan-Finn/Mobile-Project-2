@@ -30,6 +30,7 @@ public class GameBoard {
     private final static String IDS = "GameBoard.ids";
     private int rounds;
     private final Context context;
+    private ValueEventListener collects, next, score1, score2, round;
 
     public GameBoard(Context context, GameBoardView gbv) {
         this.context = context;
@@ -43,7 +44,7 @@ public class GameBoard {
         gameRef.child("p2Score").setValue(0);
         gameRef.child("round").setValue(5);
 
-        gameRef.child("collectables").addValueEventListener(new ValueEventListener() {
+        collects = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 collectables.clear();
@@ -61,11 +62,12 @@ public class GameBoard {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        };
+        gameRef.child("collectables").addValueEventListener(collects);
     }
 
     public void init(GameBoardActivity gba) {
-        gameRef.child("nextPlayer").addValueEventListener(new ValueEventListener() {
+        next = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 gba.findViewById(R.id.button).setEnabled(snapshot.getValue(Integer.class) == currentPlayer.getId());
@@ -74,43 +76,49 @@ public class GameBoard {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        };
 
-        gameRef.child("p1Score").addValueEventListener(new ValueEventListener() {
+        score1 = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 players.get(0).setScore(snapshot.getValue(Integer.class));
-                gba.updateGUI();
-                gba.isEndGame();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        };
 
-        gameRef.child("p2Score").addValueEventListener(new ValueEventListener() {
+        score2 = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 players.get(1).setScore(snapshot.getValue(Integer.class));
-                gba.updateGUI();
-                gba.isEndGame();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        };
 
-        gameRef.child("round").addValueEventListener(new ValueEventListener() {
+        round = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 rounds = snapshot.getValue(Integer.class);
-                gba.updateGUI();
-                gba.isEndGame();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
-        });
+        };
+
+        gameRef.child("nextPlayer").addValueEventListener(next);
+        gameRef.child("p1Score").addValueEventListener(score1);
+        gameRef.child("p2Score").addValueEventListener(score2);
+        gameRef.child("round").addValueEventListener(round);
+    }
+
+    public void onDestroy() {
+        gameRef.child("nextPlayer").removeEventListener(next);
+        gameRef.child("p1Score").removeEventListener(score1);
+        gameRef.child("p2Score").removeEventListener(score2);
+        gameRef.child("round").removeEventListener(round);
     }
 
     public ArrayList<Collectable> getCollectables() {
