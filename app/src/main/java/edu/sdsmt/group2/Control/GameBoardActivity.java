@@ -1,21 +1,20 @@
 package edu.sdsmt.group2.Control;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -102,28 +102,36 @@ public class GameBoardActivity extends AppCompatActivity {
 
     private void isEndGame() {
         if(view.isEndGame()) {
-            String winner = "WINNER\n";
-            int player1Score = Integer.parseInt(view.getPlayer1Score());
-            int player2Score = Integer.parseInt(view.getPlayer2Score());
+            endGame(null);
+        }
+    }
 
-            Intent intent = new Intent(this, EndGameActivity.class);
+    private void endGame(String winner) {
+        int player1Score = Integer.parseInt(view.getPlayer1Score());
+        int player2Score = Integer.parseInt(view.getPlayer2Score());
 
-            intent.putExtra(EndGameActivity.PLAYER1_MESSAGE, view.getPlayer1Name()
-                    + "'s Score\n" + view.getPlayer1Score());
-            intent.putExtra(EndGameActivity.PLAYER2_MESSAGE, view.getPlayer2Name()
-                    + "'s Score\n" + view.getPlayer2Score());
+        Intent intent = new Intent(this, EndGameActivity.class);
 
+        intent.putExtra(EndGameActivity.PLAYER1_MESSAGE, view.getPlayer1Name()
+                + "'s Score\n" + view.getPlayer1Score());
+        intent.putExtra(EndGameActivity.PLAYER2_MESSAGE, view.getPlayer2Name()
+                + "'s Score\n" + view.getPlayer2Score());
+
+        if(winner == null) {
             //get the winner
             if (player1Score > player2Score)
-                winner += view.getPlayer1Name();
+                winner = view.getPlayer1Name();
             else if (player1Score < player2Score)
-                winner += view.getPlayer2Name();
+                winner = view.getPlayer2Name();
             else
                 winner = "TIE!";
-            intent.putExtra(EndGameActivity.WINNER_MESSAGE, winner);
-            startActivity(intent);
-            finish();
         }
+
+        winner = "Winner:\n"+winner;
+
+        intent.putExtra(EndGameActivity.WINNER_MESSAGE, winner);
+        startActivity(intent);
+        finish();
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -153,18 +161,13 @@ public class GameBoardActivity extends AppCompatActivity {
         view.captureClicked();
         updateGUI();
         isEndGame();
+        // update the current player in firebase
+        gameRef.child("player").setValue(getIntent().getStringExtra(WelcomeActivity.NAME));
         waitForOpponent();
     }
 
     private void waitForOpponent() {
-//        DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int option) {
-//                if(option == DialogInterface.BUTTON_POSITIVE) {
-//                    finish();
-//                }
-//            }
-//        };
+
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         String dialogMessage = "Waiting for opponent to finish their turn";
         builder.setMessage(dialogMessage);
@@ -181,12 +184,12 @@ public class GameBoardActivity extends AppCompatActivity {
         ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                // check if gameRef.child("player") has returned to this player's id/name
-//                if (snapshot.getValue(String.class) == ) {
-//                    timedOut[0] = false;
-//                    waitdlg.cancel();
-//                    // advance turn and scores
-//                }
+                // check if gameRef.child("player") has returned to this player's id/name
+                if (Objects.equals(snapshot.getValue(String.class), getIntent().getStringExtra(WelcomeActivity.NAME))) {
+                    timedOut[0] = false;
+                    waitdlg.cancel();
+                    // update values from database
+                }
             }
 
             @Override
@@ -203,6 +206,7 @@ public class GameBoardActivity extends AppCompatActivity {
                     gameRef.child("player").removeEventListener(listener);
                     waitdlg.cancel();
                     Log.d("Timeout", "Win because of timeout");
+                    endGame(getIntent().getStringExtra(WelcomeActivity.NAME));
                 }
             }
         };
@@ -217,10 +221,7 @@ public class GameBoardActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(GameBoardActivity.this);
         builder.setTitle(R.string.QUIT_GAME);
         builder.setMessage(R.string.QUIT_GAME_MESSAGE);
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-            finish();
-//            sign out
-        });
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> finish());
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss());
         builder.show();
     }
