@@ -1,4 +1,4 @@
-{
+<!--{
   "game" : {
     "collectables" : [{}],
     "p0Score" : 0,
@@ -18,4 +18,5 @@
       "fake" : "fake@gmail.com"
     }
   }
-}
+}-->
+<resources></resources>
